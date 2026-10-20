@@ -1,4 +1,4 @@
-import streamlit as st
+app_code_with_gemini = '''import streamlit as st
 import pandas as pd
 from datetime import date, datetime
 import io
@@ -138,17 +138,18 @@ def consultar_asesor_ia_manual(estudiante, nueva_deuda):
         
         # Obtener el historial de compras del estudiante para darle contexto a la IA
         historial_estudiante = [t for t in st.session_state.transacciones if t["Estudiante"] == estudiante]
-        historial_texto = str(historial_estudiante[-8:]) # últimos 8 movimientos
+        historial_texto = str(historial_estudiante[-8:])
 
         system_prompt = "Eres un Asesor de Riesgo de Crédito y Cobranza para un Comedor Universitario. Tu única función es analizar la cuenta de un estudiante bajo demanda del administrador, y justificar si se le debe suspender el crédito basándose en su saldo acumulado e historial (ejemplo de riesgo mayor a ₡10,000). Escribe de manera profesional, asertiva y concisa en colones costarricenses (₡)."
         query_user = f"El estudiante {estudiante} tiene una deuda acumulada de ₡{nueva_deuda:,.2f}. Su historial de consumo y abonos es: {historial_texto}. Analiza si amerita congelarle el crédito temporalmente y da tu recomendación directa."
 
+        # Combinación de textos evitando escapes complejos de saltos de línea
+        prompt_completo = system_prompt + "\\n\\n" + query_user
+
         # Usando el modelo recomendado gemini-2.5-flash
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=f"{system_prompt}
-
-Datos del caso: {query_user}",
+            contents=prompt_completo,
         )
         resultado = response.text
 
@@ -255,3 +256,7 @@ st.header("📝 Historial de Transacciones")
 if st.session_state.transacciones:
     df_trans = pd.DataFrame(st.session_state.transacciones)
     st.dataframe(df_trans.iloc[::-1], use_container_width=True)
+'''
+
+with open('app.py', 'w', encoding='utf-8') as f:
+    f.write(app_code_with_gemini)
