@@ -146,9 +146,9 @@ def consultar_asesor_ia_manual(estudiante, nueva_deuda):
         # Combinación de textos evitando escapes complejos de saltos de línea
         prompt_completo = system_prompt + "\\n\\n" + query_user
 
-        # Usando el modelo recomendado gemini-2.5-flash
+        # Usando 'gemini-1.5-flash' para compatibilidad máxima de la API sin problemas de migración
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-1.5-flash',
             contents=prompt_completo,
         )
         resultado = response.text
