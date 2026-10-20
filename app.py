@@ -143,12 +143,11 @@ def consultar_asesor_ia_manual(estudiante, nueva_deuda):
         system_prompt = "Eres un Asesor de Riesgo de Crédito y Cobranza para un Comedor Universitario. Tu única función es analizar la cuenta de un estudiante bajo demanda del administrador, y justificar si se le debe suspender el crédito basándose en su saldo acumulado e historial (ejemplo de riesgo mayor a ₡10,000). Escribe de manera profesional, asertiva y concisa en colones costarricenses (₡)."
         query_user = f"El estudiante {estudiante} tiene una deuda acumulada de ₡{nueva_deuda:,.2f}. Su historial de consumo y abonos es: {historial_texto}. Analiza si amerita congelarle el crédito temporalmente y da tu recomendación directa."
 
-        # Combinación de textos evitando escapes complejos de saltos de línea
         prompt_completo = system_prompt + "\\n\\n" + query_user
 
-        # Usando 'gemini-1.5-flash' para compatibilidad máxima de la API sin problemas de migración
+        # Usando 'gemini-3.8-flash' como lo requiere tu cuenta de API de Google
         response = client.models.generate_content(
-            model='gemini-1.5-flash',
+            model='gemini-3.8-flash',
             contents=prompt_completo,
         )
         resultado = response.text
